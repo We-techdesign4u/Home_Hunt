@@ -4,7 +4,7 @@ import React from "react";
 import { isLoading } from "expo-font";
 
 const CustomButton = ({
-  tittle,
+  title,
   handlePress,
   containerStyles,
   textStyles,
@@ -19,8 +19,10 @@ const CustomButton = ({
       }`}
       disabled={isLoading}
     >
-      <Text className="text-center text-white text-xl font-InSemiBold">
-        {tittle}
+      <Text
+        className={`text-center text-white text-xl font-InSemiBold ${textStyles}`}
+      >
+        {title}
       </Text>
     </TouchableOpacity>
   );

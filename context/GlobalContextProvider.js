@@ -8,18 +8,24 @@ export const useGlobalContext = () => useContext(GlobalContext);
 
 const GlobalContextProvider = ({ children }) => {
   const [isLoggedIn, setisLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [NewQuery, setNewQuery] = useState("");
+  const [newHeaderHeight, setNewHeaderHeight] = useState("");
+  const [rooms, setRooms] = useState([]);
+  const [userAddress, setUserAddress] = useState("");
 
   useEffect(() => {
     getCurrentUser()
       .then((res) => {
         if (res) {
+          // setisLoggedIn(true);
+          setCurrentUser(res);
           setisLoggedIn(true);
-          setUser(res);
+          // console.log(res);
         } else {
           setisLoggedIn(false);
-          setUser(null);
+          setCurrentUser(null);
         }
       })
       .catch((error) => {
@@ -29,9 +35,24 @@ const GlobalContextProvider = ({ children }) => {
         setIsLoading(false);
       });
   }, []);
+
   return (
     <GlobalContext.Provider
-      value={{ isLoggedIn, setisLoggedIn, user, setUser, isLoading }}
+      value={{
+        isLoggedIn,
+        setisLoggedIn,
+        currentUser,
+        setCurrentUser,
+        isLoading,
+        NewQuery,
+        setNewQuery,
+        newHeaderHeight,
+        setNewHeaderHeight,
+        rooms,
+        setRooms,
+        userAddress,
+        setUserAddress,
+      }}
     >
       {children}
     </GlobalContext.Provider>

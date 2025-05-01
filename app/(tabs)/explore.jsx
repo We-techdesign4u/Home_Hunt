@@ -1,60 +1,77 @@
-import { View, Text, ScrollView, Image, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  TextInput,
+  Alert,
+} from "react-native";
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Formfield from "../../components/Formfield";
-import CustomButton from "../../components/CustomButton";
-import { useState } from "react";
 import { icons } from "../../constants";
-import { Link, router } from "expo-router";
-import { TouchableOpacity } from "react-native";
+import Searchbar from "../../components/searchbar";
+import useAppwrite from "../../lib/useAppWrite";
+import { getAllPosts, searchPosts } from "../../lib/appwrite";
 import Hcard from "../../components/Hcard";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect } from "react";
+import { Redirect } from "expo-router";
+import { useState } from "react";
+import { useGlobalContext } from "../../context/GlobalContextProvider";
 
-const explore = () => {
+const Search = () => {
+  // const [NewQuery, setNewQuery] = useState("");
+  const { userAddress, NewQuery, setNewQuery } = useGlobalContext();
+  const { data: posts, refetch } = useAppwrite(() => searchPosts(query));
+
+  const query = NewQuery;
+
+  //   console.log(query, posts);
+
+  useEffect(() => {
+    refetch();
+  }, [query]);
+
   return (
-    <SafeAreaView className="h-full bg-white">
-      <View className="h-full" style={{ flex: 1 }}>
-        <View className="px-4">
-          <View className="w-full h-[40] bg-[#F4F6F9] rounded-lg  px-4  mt-2 items-center flex-row">
-            <TextInput
-              placeholder="Your Address Here"
-              className="flex-1 text-gray-700 font-InMedium text-base w-full"
-            />
-            <TouchableOpacity>
+    <View className="h-full ">
+      <FlatList
+        keyboardShouldPersistTaps="always"
+        data={posts}
+        keyExtractor={(item) => item.$id}
+        ListHeaderComponent={({ item }) => (
+          <View className="mt-3">
+            <View className="flex-row mx-4 items-center">
+              <Text className="text-sm font-InRegular text-tsecondary">
+                Enter your location and property type
+              </Text>
+            </View>
+
+            <Searchbar
+              initialQuery={query}
+              placeholder={"Property type and location here"}
+              // handlePress={searchPosts}
+            ></Searchbar>
+
+            <TouchableOpacity
+              onPress={() => setNewQuery(userAddress)}
+              className=" my-6 px-4 items-center flex-row"
+            >
               <Image
                 tintColor={"#00B22D"}
-                className="w-5 h-5"
+                className="w-[20] h-[20] mr-3"
                 resizeMode="contain"
-                source={icons.search}
+                source={icons.direction}
               />
+              <Text className="text-left text-sm text-tsecondary font-InRegular">
+                Use my current location
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <View className="py-5 w-full flex-row ">
-          <TouchableOpacity className=" border-b-2 h-9 w-1/3 border-b-primary justify-center items-center">
-            <Text className="text-primary text-base font-InSemiBold">BUY</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="border-b-[0.3px] h-9 w-1/3 border-b-tsecondary justify-center items-center">
-            <Text className="text-tsecondary text-base font-InSemiBold">
-              RENT
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="border-b-[0.3px] h-9 w-1/3 border-b-tsecondary justify-center items-center">
-            <Text className="text-tsecondary text-base font-InSemiBold">
-              AGENTS
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView className="px-5">
-          <Hcard></Hcard>
-          <Hcard></Hcard>
-          <Hcard></Hcard>
-          <Hcard></Hcard>
-          <Hcard></Hcard>
-          <Hcard></Hcard>
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+        )}
+        renderItem={({ item }) => <Hcard data={item} />}
+      />
+    </View>
   );
 };
 
-export default explore;
+export default Search;

@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import { Stack } from "expo-router";
 import React from "react";
 
-const AuthLayout = () => {
+const LocationLayout = () => {
   return (
     <>
       <Stack>
@@ -13,4 +13,4 @@ const AuthLayout = () => {
   );
 };
 
-export default AuthLayout;
+export default LocationLayout;

@@ -31,7 +31,7 @@ const index = () => {
               App to search and discover the most suitable place for you to stay
             </Text>
             <CustomButton
-              tittle="Let's Get Started"
+              title="Let's Get Started"
               handlePress={() => router.push("/location")}
               containerStyles="w-80 mt-7"
             />

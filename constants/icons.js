@@ -31,6 +31,28 @@ import ssetting from "../assets/icons/ssetting.png";
 import sprofile from "../assets/icons/sprofile.png";
 import forward from "../assets/icons/forward.png";
 import edit from "../assets/icons/edit.png";
+import size from "../assets/icons/size.png";
+import bed from "../assets/icons/bed.png";
+import bath from "../assets/icons/bath.png";
+import phone from "../assets/icons/phone.png";
+import text from "../assets/icons/text.png";
+import star from "../assets/icons/star.png";
+import addImage from "../assets/icons/addImage.png";
+import share from "../assets/icons/share.png";
+import check from "../assets/icons/check.png";
+import arrorHead from "../assets/icons/arrorHead.png";
+import mic from "../assets/icons/mic.png";
+import clip from "../assets/icons/clip.png";
+import send from "../assets/icons/send.png";
+import fav from "../assets/icons/fav.png";
+import unfav from "../assets/icons/unfav.png";
+import instagram from "../assets/icons/instagram.png";
+import customerService from "../assets/icons/customerService.png";
+import whatsapp from "../assets/icons/whatsapp.png";
+import website from "../assets/icons/website.png";
+import file from "../assets/icons/file.png";
+import downarrow from "../assets/icons/downarrow.png";
+import satellite from "../assets/icons/satellite.png";
 
 export default {
   play,
@@ -66,4 +88,26 @@ export default {
   sprofile,
   forward,
   edit,
+  bed,
+  bath,
+  size,
+  phone,
+  text,
+  star,
+  addImage,
+  share,
+  check,
+  arrorHead,
+  mic,
+  send,
+  clip,
+  fav,
+  unfav,
+  website,
+  whatsapp,
+  instagram,
+  customerService,
+  file,
+  downarrow,
+  satellite,
 };

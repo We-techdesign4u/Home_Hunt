@@ -10,6 +10,7 @@ import house1 from "../assets/images/house1.png";
 import house2 from "../assets/images/house2.png";
 import house3 from "../assets/images/house3.png";
 import house4 from "../assets/images/house4.png";
+import profileImage from "../assets/images/pimage.jpg";
 
 export default {
   profile,
@@ -24,4 +25,5 @@ export default {
   house2,
   house3,
   house4,
+  profileImage,
 };

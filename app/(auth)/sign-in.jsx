@@ -3,16 +3,26 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Formfield from "../../components/Formfield";
 import CustomButton from "../../components/CustomButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { icons } from "../../constants";
 import { Link } from "expo-router";
-import { signIn } from "../../lib/appwrite";
+import { getCurrentUser, signIn } from "../../lib/appwrite";
 import { router } from "expo-router";
+import { useGlobalContext } from "../../context/GlobalContextProvider";
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
-
+  const [shouldNavigate, setShouldNavigate] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    setisLoggedIn,
+    isLoggedIn,
+    setCurrentUser,
+    currentUser,
+    setUserAddress,
+    userAddress,
+  } = useGlobalContext();
 
   const submit = async () => {
     if (!form.email || !form.password) {
@@ -24,24 +34,46 @@ const SignIn = () => {
     try {
       await signIn(form.email, form.password);
       // set it to global state...
-      router.replace("/home");
+      const result = await getCurrentUser();
+      setCurrentUser(result);
+      setisLoggedIn(true);
+      setUserAddress(
+        result?.city + ", " + result?.state + ", " + result?.country
+      );
+
+      setShouldNavigate(true);
+      // router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
+      if (error.message.includes("session is active")) {
+        setisLoggedIn(true);
+        setShouldNavigate(true);
+        // router.replace("/home");
+      }
     } finally {
       setIsSubmitting(false);
     }
-    createUser();
   };
 
+  // console.log("address", userAddress);
+
+  useEffect(() => {
+    if (shouldNavigate && isLoggedIn) {
+      // Navigate only if logged in
+      router.replace("/home");
+      setShouldNavigate(false); // Reset the flag
+    }
+  }, [shouldNavigate, isLoggedIn, router]);
+
   return (
-    <SafeAreaView className="h-full bg-white">
+    <SafeAreaView className="h-full px-4 ">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
         <View className="h-full justify-center items-center w-full ">
           <Text className="font-InMedium text-3xl text-center">Sign In</Text>
           <Text className="text-center text-gray-700 text-base mt-3 mb-14">
             Hi! Welcome back, you've been missed
           </Text>
-          <View className="w-full px-8">
+          <View className="px-4 py-4 my-[9px] rounded-2xl w-full h-auto bg-white">
             <Formfield
               tittle="Email"
               value={form.email}
@@ -57,6 +89,7 @@ const SignIn = () => {
               tittle="Password"
               placeholder="password"
               fieldstyle="w-full mb-5"
+              passwordfield=""
               handleChangeText={(e) => {
                 setForm({ ...form, password: e });
               }}
@@ -69,7 +102,7 @@ const SignIn = () => {
             </Link>
           </View>
           <CustomButton
-            tittle="Sign In"
+            title="Sign In"
             handlePress={submit}
             containerStyles="w-80 mt-5"
             isLoading={isSubmitting}
@@ -95,18 +128,24 @@ const SignIn = () => {
                 className="h-[30]"
                 resizeMode="contain"
                 source={icons.facebook}
+                tintColor={"#00B22D"}
               />
             </View>
           </View>
           <View className="flex-row items-center">
-            <Text className="mt-10 text-base">Don't have an account? </Text>
+            <Text className="mt-10 font-InSemiBold text-lg">
+              Don't have an account?{" "}
+            </Text>
             <Link
               href="/sign-up"
-              className="underline mt-10 text-base text-primary "
+              className="underline mt-10 text-lg font-InSemiBold text-primary "
             >
               Sign Up
             </Link>
           </View>
+          <Link className="my-4" href="/location">
+            <Text>or continue without an account</Text>
+          </Link>
         </View>
       </ScrollView>
     </SafeAreaView>

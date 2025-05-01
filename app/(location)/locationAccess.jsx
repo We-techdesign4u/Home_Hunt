@@ -3,109 +3,123 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Formfield from "../../components/Formfield";
 import CustomButton from "../../components/CustomButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { icons } from "../../constants";
 import { Link, router } from "expo-router";
 import { TouchableOpacity } from "react-native";
+import { useGlobalContext } from "../../context/GlobalContextProvider";
+import { Alert } from "react-native";
 
 const LocationAccess = () => {
+  const { userAddress, setUserAddress } = useGlobalContext();
+  const [shouldNavigate, setShouldNavigate] = useState(false);
+  const [myLocation, setMyLocation] = useState({
+    state: "",
+    country: "",
+    city: "",
+  });
+
+  const RenderFooter = () => {
+    const continueToNext = () => {
+      if (!myLocation.state || !myLocation.city || !myLocation.country) {
+        return Alert.alert("Please fill all the fields");
+      }
+
+      setUserAddress(
+        myLocation.city + ", " + myLocation.state + ", " + myLocation.country
+      );
+      setShouldNavigate(true);
+    };
+
+    useEffect(() => {
+      if (shouldNavigate && userAddress !== "") {
+        router.replace({ pathname: "/home", params: { address: userAddress } });
+        setShouldNavigate(false); // Reset the flag
+      }
+    }, [shouldNavigate, userAddress, router]);
+
+    return (
+      <View className="absolute justify-center items-center px-4 rounded-t-2xl h-[90px] bottom-0 w-full bg-white">
+        <CustomButton
+          title="Continue"
+          handlePress={() => continueToNext(myLocation)}
+          containerStyles="w-5/6"
+        />
+      </View>
+    );
+  };
+  const autoLocation = () => {
+    setUserAddress("");
+    router.push("/location");
+  };
+
   return (
-    <SafeAreaView className="h-full bg-white">
-      <View className="h-full px-4" style={{ flex: 1 }}>
-        <View className="flex-row justify-center items-center">
-          <Text className="text-2xl font-InMedium text-center">
-            Enter Your Location
-          </Text>
-        </View>
-        <View
-          className={`w-full h-[40] bg-[#F4F6F9] rounded-lg focus:border-primary px-4 mt-8 items-center flex-row`}
-        >
-          <TextInput
-            placeholder="Your Address Here"
-            className="flex-1 text-gray-700 font-InMedium text-base w-full"
-          />
-          <TouchableOpacity>
+    <View className="flex-1">
+      <SafeAreaView className="h-full pt-4 ">
+        <View className="px-4">
+          <View className="flex-row justify-center items-center">
+            <Text className="text-2xl font-InMedium text-center">
+              Enter Your Location
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => autoLocation()}
+            className=" my-6 flex-row"
+          >
             <Image
               tintColor={"#00B22D"}
-              className="w-5 h-5"
+              className="w-[25] h-[25] mr-3"
               resizeMode="contain"
-              source={icons.search}
+              source={icons.direction}
             />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity className=" my-6 flex-row">
-          <Image
-            tintColor={"#00B22D"}
-            className="w-[25] h-[25] mr-3"
-            resizeMode="contain"
-            source={icons.direction}
-          />
-          <Text className="text-left text-lg font-InSemiBold">
-            Use my current location
-          </Text>
-        </TouchableOpacity>
-        <View className="pt-5 border-t-[1px] border-gray-200 ">
-          <Text className="tracking-widest text-[13px] font-InMedium text-tsecondary mb-1">
-            SEARCH RESULT
-          </Text>
-        </View>
-
-        <ScrollView className="">
-          <TouchableOpacity
-            onPress={() => router.push("/home")}
-            className="mt-4 pb-3 border-b-[1px] border-gray-200"
-          >
-            <View className="flex-row items-center mb-1">
-              <Image
-                tintColor={"#00B22D"}
-                className="w-[15] h-[15] mr-1"
-                resizeMode="contain"
-                source={icons.direction}
-              />
-              <Text className="text-[17px] font-InMedium text-tprimary">
-                Golden Avenue
-              </Text>
-            </View>
-            <Text className="text-[17px] text-tsecondary">
-              8502 Preston Rd. Ingl...
+            <Text className="text-left text-lg font-InSemiBold">
+              Use my current location
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity className="mt-4 pb-3 border-b-[1px] border-gray-200">
-            <View className="flex-row items-center mb-1">
-              <Image
-                tintColor={"#00B22D"}
-                className="w-[15] h-[15] mr-1"
-                resizeMode="contain"
-                source={icons.direction}
-              />
-              <Text className="text-[17px] font-InMedium text-tprimary">
-                Allen Avenue
-              </Text>
-            </View>
-            <Text className="text-[17px] text-tsecondary">
-              8502 Gegudu Rd. Ingl...
+          <View className="pt-5 border-t-[1px] border-gray-200 ">
+            <Text className="tracking-widest text-[13px] font-InMedium text-tsecondary mb-1">
+              ENTER YOUR LOCATION HERE
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="mt-4 pb-3 border-b-[1px] border-gray-200">
-            <View className="flex-row items-center mb-1">
-              <Image
-                tintColor={"#00B22D"}
-                className="w-[15] h-[15] mr-1"
-                resizeMode="contain"
-                source={icons.direction}
-              />
-              <Text className="text-[17px] font-InMedium text-tprimary">
-                Lagos Island
-              </Text>
-            </View>
-            <Text className="text-[17px] text-tsecondary">
-              8502 Mowe Rd. Ingl...
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+          </View>
+
+          <View className="px-4 py-4 my-[9px] rounded-2xl w-full h-auto bg-white ">
+            <Formfield
+              tittle={"City*"}
+              value={myLocation.city}
+              tittlestyle={"font-InSemiBold"}
+              placeholder={"CIty"}
+              handleChangeText={(e) => {
+                setMyLocation({ ...myLocation, city: e });
+              }}
+            />
+
+            <Formfield
+              tittle={"State*"}
+              value={myLocation.state}
+              tittlestyle={"font-InSemiBold"}
+              placeholder={"State"}
+              handleChangeText={(e) => {
+                setMyLocation({ ...myLocation, state: e });
+              }}
+            />
+
+            <Formfield
+              tittle={"Country*"}
+              value={myLocation.country}
+              tittlestyle={"font-InSemiBold"}
+              placeholder={"Country"}
+              handleChangeText={(e) => {
+                setMyLocation({ ...myLocation, country: e });
+              }}
+            />
+          </View>
+        </View>
+      </SafeAreaView>
+
+      <RenderFooter myLocation={myLocation} setMyLocation={setMyLocation} />
+    </View>
   );
 };
 
