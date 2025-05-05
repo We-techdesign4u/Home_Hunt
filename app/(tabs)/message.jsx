@@ -42,7 +42,8 @@ const Message = () => {
         if (
           response.events.includes(
             "databases.*.collections.*.documents.*.create"
-          )
+          ) &&
+          !rooms.some((msg) => msg.$id === response.payload.$id)
         ) {
           // setChat((prevState) => [response.payload, ...prevState]);
           setRooms((prevState) => [response.payload, ...prevState]);
@@ -91,124 +92,18 @@ const Message = () => {
     };
   }, [rooms, getRoom]);
 
-  // useEffect(() => {
-  //   getRoom();
-  //   const unSube = client.subscribe(
-  //     `databases.${config.databaseId}.collections.${config.roomCollectionId}.documents.`,
-
-  //     (response) => {
-  //       if (
-  //         response.events.includes(
-  //           "databases.*.collections.*.documents.*.create"
-  //         )
-  //       ) {
-  //         // console.log("A ROOM WAS created!!!");
-  //         setRooms((prevState) => [response.payload, ...prevState]);
-  //       }
-
-  //       if (
-  //         response.events.includes(
-  //           "databases.*.collections.*.documents.*.update"
-  //         )
-  //       ) {
-  //         console.log("updated room");
-  //         const updatedRooms = rooms.map((room) => {
-  //           if (room.$id === response.payload.$id) {
-  //             return {
-  //               ...room,
-  //               isSeenR: response.payload.isSeenR,
-  //               isSeenS: response.payload.isSeenS,
-  //               lastMessage: response.payload.lastMessage,
-  //               $updatedAt: response.payload.$updatedAt,
-  //             };
-  //           } else {
-  //             return room;
-  //           }
-  //         });
-
-  //         setRooms(updatedRooms);
-  //       }
-
-  //       if (
-  //         response.events.includes(
-  //           "databases.*.collections.*.documents.*.delete"
-  //         )
-  //       ) {
-  //         console.log("A MESSAGE WAS DELETED!!!");
-  //       }
-  //     }
-  //   );
-
-  //   return () => {
-  //     unSube();
-  //   };
-  // }, []);
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getRoom();
-  //     const unSube = client.subscribe(
-  //       `databases.${config.databaseId}.collections.${config.roomCollectionId}.documents.`,
-
-  //       (response) => {
-  //         if (
-  //           response.events.includes(
-  //             "databases.*.collections.*.documents.*.create"
-  //           )
-  //         ) {
-  //           // setChat((prevState) => [response.payload, ...prevState]);
-  //           // console.log("A MESSAGE WAS created!!!");
-  //           setRooms((prevState) => [response.payload, ...prevState]);
-  //         }
-
-  //         if (
-  //           response.events.includes(
-  //             "databases.*.collections.*.documents.*.update"
-  //           )
-  //         ) {
-  //           console.log("updated room");
-  //           const updatedRooms = rooms.map((room) => {
-  //             if (room.$id === response.payload.$id) {
-  //               return {
-  //                 ...room,
-  //                 isSeenR: response.payload.isSeenR,
-  //                 isSeenS: response.payload.isSeenS,
-  //                 lastMessage: response.payload.lastMessage,
-  //                 $updatedAt: response.payload.$updatedAt,
-  //               };
-  //             } else {
-  //               return room;
-  //             }
-  //           });
-
-  //           setRooms(updatedRooms);
-  //         }
-
-  //         if (
-  //           response.events.includes(
-  //             "databases.*.collections.*.documents.*.delete"
-  //           )
-  //         ) {
-  //           console.log("A MESSAGE WAS DELETED!!!");
-  //         }
-  //       }
-  //     );
-
-  //     return () => unSube();
-  //   }, [])
-  // );
-
   const getRoom = async () => {
     const res = await databases.listDocuments(
       config.databaseId,
       config.roomCollectionId,
       // [Query.orderDesc("$createdAt"), Query.limit(20)],
       [
+        Query.orderDesc("upDateAt"),
         Query.or([
           Query.equal("senderId", currentUser.$id),
           Query.equal("receiverId", currentUser.$id),
         ]),
-        Query.orderDesc("$createdAt"),
+        // Query.orderDesc("$createdAt"),
       ]
     );
 
@@ -218,6 +113,7 @@ const Message = () => {
   return (
     <View className="w-full flex-1">
       <FlatList
+        // inverted={true}
         data={rooms}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => <Room data={item} />}

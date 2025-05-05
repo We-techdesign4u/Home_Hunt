@@ -16,6 +16,8 @@ import Review from "../../components/review";
 import CustomButton from "../../components/CustomButton";
 import { router, useLocalSearchParams } from "expo-router";
 import { useGlobalContext } from "../../context/GlobalContextProvider";
+import { format, isToday, isThisWeek, parseISO } from "date-fns";
+import Hcard from "../../components/Hcard";
 
 const TabBarHeight = 48;
 const HeaderHeight = 230;
@@ -163,15 +165,19 @@ const MyProfile = () => {
       >
         <View className="justify-center my-5 items-center">
           <View className="w-[92px] h-[92px] m-3  rounded-full justify-center items-center">
-            <Image
-              resizeMode="contain"
-              className="w-[92px] h-[92px] rounded-full justify-center items-center"
-              source={{ uri: user?.avatar }}
-            />
-
-            <View className="absolute w-[32px] h-[32px] rounded-full border-white border-2 bg-primary justify-center items-center bottom-0 -right-1">
-              <Image source={icons.edit} />
-            </View>
+            {user?.profilePicture !== null ? (
+              <Image
+                source={{ uri: user?.profilePicture }}
+                className="w-[92px] h-[92px] rounded-full justify-center items-center"
+                resizeMode="cover"
+              />
+            ) : (
+              <Image
+                source={{ uri: user?.avatar }}
+                className="w-[92px] h-[92px] rounded-full justify-center items-center "
+                resizeMode="cover"
+              />
+            )}
           </View>
           <Text className="text-center text-lg font-InSemiBold">
             {user?.username}
@@ -216,6 +222,20 @@ const MyProfile = () => {
 
   //content of tab1
   const rednerTab1Item = ({ item, index }) => {
+    const dateTime = user.$createdAt;
+    const date = parseISO(dateTime);
+
+    const MyDates = () => {
+      if (isToday(date)) {
+        return format(date, "h:mma");
+      } else if (isThisWeek(date)) {
+        let dDay = format(date, "EEEE");
+        return format(date, "EEEE");
+      } else {
+        return format(date, "yyyy-MM-dd");
+      }
+    };
+
     return (
       <View className="my-4">
         <Text className="text-sm font-InRegular text-tsecondary mx-2 mb-2">
@@ -239,15 +259,15 @@ const MyProfile = () => {
           </View>
           <View className=" my-3">
             <Text className="text-sm text-tsecondary">Member Since</Text>
-            <Text className="text-sm font-InRegular">{user?.dateJoined}</Text>
+            <Text className="text-sm font-InRegular">{<MyDates />}</Text>
           </View>
           <View className=" my-3">
             <Text className="text-sm text-tsecondary">Last Active</Text>
             <Text className="text-sm font-InRegular">Online </Text>
           </View>
-          {isLoggedIn && user.$id == currentUser.$id ? (
+          {user?.$id == currentUser?.$id ? (
             <TouchableOpacity
-              className="flex-row justify-center items-center mt-8 "
+              className="flex-row justify-center items-center mt-4 py-2 bg-slate-500 "
               onPress={() => router.push("/profileUpdate")}
             >
               <Image
@@ -270,22 +290,16 @@ const MyProfile = () => {
   //Delete content of tab2
 
   const rednerTab2Item = () => {
-    const data = [{ id: "1" }, { id: "2" }, { id: "3" }];
-    // console.log(data[0].title);
     return (
       <FlatList
-        className="pb-[95px]"
-        keyExtractor={(item) => item.id}
-        data={data}
-        numColumns={1}
+        keyExtractor={(item) => item.$id}
+        data={user.property}
         ListHeaderComponent={({ item }) => (
-          <View className="px-2 pt-3 flex-row justify-between"></View>
-        )}
-        renderItem={(item) => (
-          <View className="">
-            <View className="px-2"></View>
+          <View className="px-2 pt-3 flex-row justify-between">
+            <Text>header</Text>
           </View>
         )}
+        renderItem={({ item }) => <Hcard data={item} />}
       ></FlatList>
     );
   };
@@ -340,12 +354,12 @@ const MyProfile = () => {
         renderItem = rednerTab1Item;
         break;
       case "tab2":
-        numCols = 2;
+        numCols = 1;
         data = tab2Data;
         renderItem = rednerTab2Item;
         break;
       case "tab3":
-        numCols = 2;
+        numCols = 1;
         data = tab3Data;
         renderItem = rednerTab3Item;
         break;
@@ -425,6 +439,7 @@ const MyProfile = () => {
   };
 
   // output all
+
   return (
     <View style={{ flex: 1 }}>
       <RenderTabView user={user} />

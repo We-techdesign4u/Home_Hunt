@@ -4,23 +4,26 @@ import { icons } from "../constants";
 import { images } from "../constants";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
+import { getPropertyByID } from "../lib/appwrite";
+import useAppwrite from "../lib/useAppWrite";
 
-const Hcard = ({ data }) => {
-  // console.log(data);
-
-  // data: { title, amount, adType, street, coverpicture, pictures },
+const UserPropertyCard = ({ item }) => {
+  //   const { data: property } = useAppwrite(() => getPropertyByID(item));
+  //   console.log("myprop", property.documents[0]);
+  //   console.log(item);
+  //   const data = property?.documents[0];
   return (
     <TouchableOpacity
       onPress={() =>
         router.push({
           pathname: "/prod",
-          params: { item: JSON.stringify(data) },
+          params: { item: JSON.stringify(item) },
         })
       }
       className="h-[134px] w-full bg-white  bg-gray-10 items-center relative flex-row py-3 px-2 my-2 rounded-xl border-[0px] border-tsecondary"
     >
       <Image
-        source={{ uri: data.coverpicture[0] }}
+        source={{ uri: item?.coverpicture[0] }}
         className="w-[117] rounded-lg bg-slate-600 mr-3 h-[115px]"
         resizeMode="cover"
       />
@@ -34,10 +37,10 @@ const Hcard = ({ data }) => {
       </TouchableOpacity>
       <View className="flex-1">
         <View className="flex-row justify-between mb-2">
-          <Text className="text-primary">Property {data.adType}</Text>
+          <Text className="text-primary">Property {item?.adType}</Text>
           <Text>4.5</Text>
         </View>
-        <Text className="text-[17px] font-InMedium mt-1">{data.title}</Text>
+        <Text className="text-[17px] font-InMedium mt-1">{item?.title}</Text>
 
         <View className="flex-row w-full items-center mb-2">
           <Image
@@ -47,13 +50,13 @@ const Hcard = ({ data }) => {
             source={icons.location}
           />
           <Text className="font-InMedium text-[13px] text-tsecondary">
-            {data.street}
+            {item?.street}
           </Text>
         </View>
 
         <Text>
           <Text className="text-[18px] text-primary font-InSemiBold ">
-            ${data.amount}
+            ${item?.amount}
           </Text>{" "}
           /month
         </Text>
@@ -62,4 +65,4 @@ const Hcard = ({ data }) => {
   );
 };
 
-export default Hcard;
+export default UserPropertyCard;

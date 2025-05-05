@@ -136,7 +136,6 @@ const Carousel = ({ pictures }) => {
       const mediaLibraryPermissions =
         await MediaLibrary.requestPermissionsAsync();
       if (mediaLibraryPermissions.granted) {
-        console.log("granted");
         try {
           const file = await MediaLibrary.createAssetAsync(uri);
           const folder = await MediaLibrary.getAlbumAsync(albumName);
@@ -157,20 +156,20 @@ const Carousel = ({ pictures }) => {
       shareAsync(uri);
     }
 
-    try {
-      const folder = await MediaLibrary.getAlbumAsync({ album: albumName });
-      const fileExist = folder.folder.find((file) =>
-        file.uri.includes(filename)
-      );
-      if (fileExist) {
-        console.log("file exist");
-      }
+    // try {
+    //   const folder = await MediaLibrary.getAlbumAsync({ album: albumName });
+    //   const fileExist = folder.folder.find((file) =>
+    //     file.uri.includes(filename)
+    //   );
+    //   if (fileExist) {
+    //     // console.log("file exist");
+    //   }
 
-      // const files = StorageAccessFramework.getUriForDirectoryInRoot("HomeHunt");
-      console.log("part", files);
-    } catch (err) {
-      console.log("Save err: ", err);
-    }
+    //   // const files = StorageAccessFramework.getUriForDirectoryInRoot("HomeHunt");
+    //   console.log("part", files);
+    // } catch (err) {
+    //   console.log("Save err: ", err);
+    // }
   };
 
   return (
@@ -268,9 +267,8 @@ const TypeField = ({
             receiverIdd: otherUser.$id,
             senderIdd: currentUser.$id,
             chatID: uniqeID,
-            receiverId: otherUser.$id,
+            upDateAt: new Date(),
             lastMessage: message.text,
-            senderId: currentUser.$id,
           }
           // [Permission.delete(Role.user(currentUser.$id))]
         );
@@ -290,50 +288,65 @@ const TypeField = ({
           await createText({
             ...messageProperties,
           });
+
+          // const updateCreatorRooms = async (messageProperties) => {
+          if (checkIfRoomExist.receiverIdd?.$id == currentUser?.$id) {
+            const updateCreatorRoom = await databases.updateDocument(
+              config.databaseId,
+              config.roomCollectionId,
+              roomID,
+              {
+                lastMessage: messageProperties.message.text,
+                isSeenS: false,
+                upDateAt: new Date(),
+              }
+            );
+          } else {
+            const updateCreatorRoom = await databases.updateDocument(
+              config.databaseId,
+              config.roomCollectionId,
+              roomID,
+              {
+                lastMessage: messageProperties.message.text,
+                isSeenR: false,
+                upDateAt: new Date(),
+              }
+            );
+          }
+          // };
         } catch (error) {
           throw new Error();
         }
-        // const now = new Date().toISOString();
-        // const utcDate = new Date(utcTimeString);
-        // const localTimeString = utcDate.toLocaleString();
 
-        try {
-          const updateCreatorRoom = async () => {
-            if (checkIfRoomExist.receiverIdd?.$id == currentUser?.$id) {
-              const updateCreatorRoom = await databases.updateDocument(
-                config.databaseId,
-                config.roomCollectionId,
-                roomID,
-                {
-                  lastMessage: message.text,
-                  isSeenS: false,
-                }
-              );
-            } else {
-              const updateCreatorRoom = await databases.updateDocument(
-                config.databaseId,
-                config.roomCollectionId,
-                roomID,
-                {
-                  lastMessage: message.text,
-                  isSeenR: false,
-                }
-              );
-            }
-          };
+        // try {
+        //   const updateCreatorRooms = async () => {
+        //     if (checkIfRoomExist.receiverIdd?.$id == currentUser?.$id) {
+        //       const updateCreatorRoom = await databases.updateDocument(
+        //         config.databaseId,
+        //         config.roomCollectionId,
+        //         roomID,
+        //         {
+        //           lastMessage: message.text,
+        //           isSeenS: false,
+        //         }
+        //       );
+        //     } else {
+        //       const updateCreatorRoom = await databases.updateDocument(
+        //         config.databaseId,
+        //         config.roomCollectionId,
+        //         roomID,
+        //         {
+        //           lastMessage: message.text,
+        //           isSeenR: false,
+        //         }
+        //       );
+        //     }
 
-          // const updateCreatorRoom = await databases.updateDocument(
-          //   config.databaseId,
-          //   config.roomCollectionId,
-          //   roomID,
-          //   {
-          //     lastMessage: message.text,
-          //     // upDateAt: now,
-          //   }
-          // );
-        } catch (error) {
-          throw new Error();
-        }
+        //   };
+
+        // } catch (error) {
+        //   throw new Error();
+        // }
 
         setMessage("");
         setAttachment([]);
@@ -461,8 +474,8 @@ const ChatContainer = ({
           response.events.includes(
             "databases.*.collections.*.documents.*.create"
           ) &&
-          response.payload.chatID === uniqeID &&
-          response.payload.senderId !== currentUser.$id && // Prevent own message duplicate
+          // response.payload.chatID === uniqeID &&
+          response.payload.senderIDD.$id !== currentUser.$id && // Prevent own message duplicate
           !chat.some((msg) => msg.$id === response.payload.$id) // Prevent existing message duplicate
         ) {
           setChat((prevState) => [response.payload, ...prevState]);
@@ -510,8 +523,8 @@ const ChatContainer = ({
       config.roomCollectionId,
       [
         Query.or([
-          Query.equal("senderId", currentUser.$id),
-          Query.equal("receiverId", currentUser.$id),
+          Query.equal("senderIdd", currentUser.$id),
+          Query.equal("receiverIdd", currentUser.$id),
         ]),
       ]
     );
@@ -551,7 +564,6 @@ const ChatContainer = ({
   //   }
   // };
 
-  // console.log(checkIfRoomExist.receiverIdd.$id);
   return (
     <FlatList
       inverted={true}

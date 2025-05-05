@@ -323,14 +323,14 @@ const CollapsibleTabView = () => {
             >
               <Image
                 className="w-8 mr-3 h-8 rounded-full"
-                source={{ uri: creator.avatar }}
+                source={{ uri: creator?.avatar }}
               />
               <View>
                 <Text className="font-InSemiBold text-base">
-                  {creator.username}
+                  {creator?.username}
                 </Text>
                 <Text className="text-sm text-tsecondary">
-                  {creator.city}, {creator.country}
+                  {creator?.city}, {creator?.country}
                 </Text>
               </View>
             </TouchableOpacity>

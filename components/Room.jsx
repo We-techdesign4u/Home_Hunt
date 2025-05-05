@@ -20,6 +20,7 @@ const Room = ({
     isSeenS,
     isSeenR,
     $id,
+    upDateAt,
   },
 }) => {
   const { currentUser } = useGlobalContext();
@@ -28,6 +29,10 @@ const Room = ({
   const [roomBg, setRoomBg] = useState("");
 
   // console.log(isSeenS);
+
+  // new Date().toLocaleString();
+
+  // console.log(updatedDateTime);
 
   useEffect(() => {
     info();
@@ -45,34 +50,16 @@ const Room = ({
   // );
 
   const info = () => {
-    console.log("--- info() called ---");
-    console.log("currentUser.$id:", currentUser?.$id);
-    console.log("receiverIdd.$id:", receiverIdd?.$id);
-    console.log("senderIdd.$id:", senderIdd?.$id);
-    console.log("isSeenR:", isSeenR);
-    console.log("isSeenS:", isSeenS);
-
     if (receiverIdd.$id == currentUser.$id) {
-      console.log(
-        "Current user is the receiver. Setting isSeen to isSeenR:",
-        isSeenR
-      );
       setCreator(senderIdd);
       setIsSeen(isSeenR);
     } else {
-      console.log(
-        "Current user is NOT the receiver. Setting isSeen to isSeenS:",
-        isSeenS
-      );
       setCreator(receiverIdd);
       setIsSeen(isSeenS);
     }
-    console.log("isSeen state after update:", isSeen);
   };
 
   const isSeenn = () => {
-    console.log("--- isSeenn() called ---");
-    console.log("Current isSeen state:", isSeen);
     if (!isSeen) {
       setRoomBg("bg-slate-200");
     } else {
@@ -80,7 +67,7 @@ const Room = ({
     }
   };
 
-  const dateTime = $updatedAt;
+  const dateTime = upDateAt;
   const date = parseISO(dateTime);
 
   const MyDates = () => {

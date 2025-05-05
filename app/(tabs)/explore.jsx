@@ -26,14 +26,12 @@ const Search = () => {
 
   const query = NewQuery;
 
-  //   console.log(query, posts);
-
   useEffect(() => {
     refetch();
   }, [query]);
 
   return (
-    <View className="h-full ">
+    <View className="h-full">
       <FlatList
         keyboardShouldPersistTaps="always"
         data={posts}
@@ -68,7 +66,11 @@ const Search = () => {
             </TouchableOpacity>
           </View>
         )}
-        renderItem={({ item }) => <Hcard data={item} />}
+        renderItem={({ item }) => (
+          <View className="mx-4">
+            <Hcard data={item} />
+          </View>
+        )}
       />
     </View>
   );

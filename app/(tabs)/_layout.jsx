@@ -99,10 +99,19 @@ const TabsLayout = () => {
                       })
                     }
                   >
-                    <Image
-                      className="h-[40px] w-[40px] rounded-full"
-                      source={{ uri: currentUser.avatar }}
-                    />
+                    {currentUser.profilePicture !== null ? (
+                      <Image
+                        source={{ uri: currentUser?.profilePicture }}
+                        className="h-[40px] w-[40px] rounded-full justify-center items-center"
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Image
+                        source={{ uri: currentUser?.avatar }}
+                        className="h-[40px] w-[40px] rounded-full justify-center items-center "
+                        resizeMode="cover"
+                      />
+                    )}
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity

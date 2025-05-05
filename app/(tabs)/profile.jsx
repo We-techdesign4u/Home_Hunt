@@ -99,11 +99,21 @@ const Profile = () => {
           <View className="mt-20 -mb-[140px]">
             <View className="w-[92px] h-[92px] m-3  bg-white rounded-full justify-center items-center">
               {currentUser ? (
-                <Image
-                  resizeMode="contain"
-                  className="w-[92px] h-[92px] rounded-full justify-center items-center"
-                  source={{ uri: currentUser?.avatar }}
-                />
+                <View>
+                  {currentUser.profilePicture !== null ? (
+                    <Image
+                      source={{ uri: currentUser?.profilePicture }}
+                      className="w-[92px] h-[92px] rounded-full justify-center items-center"
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <Image
+                      source={{ uri: currentUser?.avatar }}
+                      className="w-[92px] h-[92px] rounded-full justify-center items-center "
+                      resizeMode="cover"
+                    />
+                  )}
+                </View>
               ) : (
                 <Image
                   resizeMode="contain"
