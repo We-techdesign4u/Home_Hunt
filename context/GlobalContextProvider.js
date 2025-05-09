@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-import { getCurrentUser } from "../lib/appwrite";
+import { getCurrentUser, fetchFav, updateFav } from "../lib/appwrite";
 
 const GlobalContext = createContext();
 
@@ -14,6 +14,7 @@ const GlobalContextProvider = ({ children }) => {
   const [newHeaderHeight, setNewHeaderHeight] = useState("");
   const [rooms, setRooms] = useState([]);
   const [userAddress, setUserAddress] = useState("");
+  const [favs, setFavs] = useState([]);
 
   useEffect(() => {
     getCurrentUser()
@@ -22,6 +23,16 @@ const GlobalContextProvider = ({ children }) => {
           // setisLoggedIn(true);
           setCurrentUser(res);
           setisLoggedIn(true);
+          fetchFav(res.favorites)
+            .then((favData) => {
+              if (favData) {
+                // console.log("favData", favData);
+                setFavs(favData);
+              }
+            })
+            .catch((error) => {
+              console.log("fetching fav error", error);
+            });
           // console.log(res);
         } else {
           setisLoggedIn(false);
@@ -35,6 +46,39 @@ const GlobalContextProvider = ({ children }) => {
         setIsLoading(false);
       });
   }, []);
+
+  const updateUserContext = (updatedUser) => {
+    setCurrentUser((prevUser) => ({ ...prevUser, ...updatedUser }));
+  };
+
+  const removeFav = async (data) => {
+    try {
+      const newFavs = currentUser.favorites.filter((fav) => fav !== data.$id);
+
+      updateUserContext({ ...currentUser, favorites: newFavs });
+      await updateFav(newFavs, currentUser);
+      setFavs((prevFavs) => prevFavs.filter((fav) => fav.$id !== data.$id));
+    } catch (error) {}
+  };
+
+  const addFav = async (data) => {
+    // console.log("Adding fav ID:", data.$id);
+    const newFavs = [...currentUser.favorites, data.$id];
+
+    updateUserContext({ ...currentUser, favorites: newFavs });
+    await updateFav(newFavs, currentUser);
+    fetchFav([data.$id])
+      .then((res) => {
+        if (res) {
+          setFavs((prevState) => [...prevState, ...res]);
+        }
+      })
+      .catch((error) => {
+        console.log("fetching additoinal fav error", error);
+      });
+
+    // console.log("After addFav, updatedFavs:", updatedFavs);
+  };
 
   return (
     <GlobalContext.Provider
@@ -52,6 +96,11 @@ const GlobalContextProvider = ({ children }) => {
         setRooms,
         userAddress,
         setUserAddress,
+        updateUserContext,
+        favs,
+        setFavs,
+        removeFav,
+        addFav,
       }}
     >
       {children}

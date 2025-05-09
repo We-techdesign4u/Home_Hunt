@@ -3,22 +3,33 @@ import React, { useState } from "react";
 import { icons, images } from "../../constants";
 import CustomButton from "../../components/CustomButton";
 import { router } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 const BookingOption = () => {
+  const params = useLocalSearchParams();
+
+  const allData = JSON.parse(params.data);
+
   return (
     <View className="bg-gray-50 flex-1 pt-3">
-      {Radio()}
-      {renderFooter()}
+      <Radio />
+      <RenderFooter allData={allData} />
     </View>
   );
 };
 
-const renderFooter = () => {
+const RenderFooter = (allData) => {
   return (
     <View className="absolute justify-center items-center px-4 rounded-t-2xl h-[90px] bottom-0 w-full bg-white">
       <CustomButton
         title="Continue"
-        handlePress={() => router.push("/customerInfo")}
+        // handlePress={() => router.push("/customerInfo")}
+        handlePress={() =>
+          router.push({
+            pathname: "/customerInfo",
+            params: { data: JSON.stringify(allData) },
+          })
+        }
         containerStyles="w-5/6"
       />
     </View>

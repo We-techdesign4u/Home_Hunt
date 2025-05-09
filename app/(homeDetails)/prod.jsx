@@ -72,7 +72,7 @@ const CollapsibleTabView = () => {
   const params = useLocalSearchParams();
 
   const allData = JSON.parse(params.item);
-
+  // console.log("first params", params);
   const {
     adType,
     title,
@@ -261,7 +261,16 @@ const CollapsibleTabView = () => {
         </View>
         <CustomButton
           title="Book Now"
-          handlePress={() => router.push("/bookingOption")}
+          // handlePress={() => router.push("/bookingOption",
+
+          // )}
+
+          handlePress={() =>
+            router.push({
+              pathname: "/bookingOption",
+              params: { data: JSON.stringify(allData) },
+            })
+          }
           containerStyles="w-[185px]"
         />
       </View>

@@ -58,8 +58,6 @@ const Home = () => {
     router.push("/location");
   };
 
-  // const checkIfFav = posts.find((item) => item.favrties === uniqeID);
-
   return (
     <View className="h-full ">
       <FlatList
@@ -92,13 +90,21 @@ const Home = () => {
                 {address ? (
                   <Text className="font-InSemiBold text-base">{address}</Text>
                 ) : (
-                  <Text className="font-InSemiBold text-base">
-                    {userAddress}
-                  </Text>
+                  <View>
+                    {userAddress ? (
+                      <Text className="font-InSemiBold text-base">
+                        {userAddress}
+                      </Text>
+                    ) : (
+                      <Text className="font-InSemiBold text-base">
+                        Enter Location Here
+                      </Text>
+                    )}
+                  </View>
                 )}
               </TouchableOpacity>
             </View>
-            <Searchbar placeholder={"Address Here"}></Searchbar>
+            <Searchbar placeholder={"Search Property Type"}></Searchbar>
 
             <View className="h-[40px] px-4 mt-5 items-center justify-between flex-row">
               <Text className="text-sm text-tsecondary  font-InRegular mb-0">

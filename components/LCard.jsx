@@ -1,18 +1,19 @@
 import { View, Text, Image, FlatList, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { icons } from "../constants";
 import { images } from "../constants";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 import { useGlobalContext } from "../context/GlobalContextProvider";
+import { useEffect } from "react";
+import { updateFav } from "../lib/appwrite";
 
 const LCard = (item) => {
-  //   console.log("what", item.item);
-  const data = item.item;
-  const { setCurrentUser, currentUser } = useGlobalContext();
+  const { currentUser, removeFav, addFav } = useGlobalContext();
 
-  const checkIfFav = currentUser.favorites.find((favId) => favId === data.$id);
-  console.log(checkIfFav);
+  const data = item.item;
+  const checkIfFav = currentUser?.favorites?.includes(data.$id) || false;
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -24,40 +25,53 @@ const LCard = (item) => {
       className="h-[300px] bg-white mx-4 relative p-4 my-2 rounded-2xl "
     >
       <Image
-        source={{ uri: data.coverpicture[0] }}
+        source={{ uri: data?.coverpicture[0] }}
         className="w-full rounded-2xl mb-2 h-[155px]"
         resizeMode="cover"
       />
       <View className=" flex-1 justify-center items-center absolute  left-8 top-6">
         <View className="h-[30px] w-[90px] justify-center items-center rounded-full bg-white opacity-80"></View>
         <Text className="absolute text-black font-InSemiBold text-[15px]">
-          {data.adType}
+          {data?.adType}
         </Text>
       </View>
 
-      {checkIfFav ? (
-        <TouchableOpacity className="h-[30px] w-[30px] justify-center items-center absolute  right-8 top-6">
-          <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
+      {currentUser ? (
+        <View>
+          {checkIfFav ? (
+            <TouchableOpacity
+              onPress={() => removeFav(data)}
+              className="h-[30px] w-[30px] justify-center items-center absolute  right-8 top-6"
+            >
+              <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
 
-          <Image
-            tintColor={"#ffffff"}
-            className="h-4 absolute opacity-100 w-5"
-            resizeMode="contain"
-            source={icons.fav}
-          />
-        </TouchableOpacity>
+              <Image
+                tintColor={"#ffffff"}
+                className="h-4 absolute opacity-100 w-5"
+                resizeMode="contain"
+                source={icons.fav}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => addFav(data)}
+              className="h-[30px] w-[30px] justify-center items-center absolute  right-8 top-6"
+            >
+              <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
+
+              <Image
+                tintColor={"#ffffff"}
+                className="h-4 absolute opacity-100 w-5"
+                resizeMode="contain"
+                source={icons.unfav}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       ) : (
-        <TouchableOpacity className="h-[30px] w-[30px] justify-center items-center absolute  right-8 top-6">
-          <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
-
-          <Image
-            tintColor={"#ffffff"}
-            className="h-4 absolute opacity-100 w-5"
-            resizeMode="contain"
-            source={icons.unfav}
-          />
-        </TouchableOpacity>
+        <View></View>
       )}
+
       <View className="flex-1">
         <View className="flex-row justify-between mb-1">
           <View className="flex-row items-center">
@@ -72,23 +86,31 @@ const LCard = (item) => {
               numberOfLines={1}
               className="font-InSemiBold text-[13px] text-[#939498]"
             >
-              {data.street}
+              {data?.street}
             </Text>
           </View>
-          {/* <Text className="text-primary">Property {item.adType}</Text> */}
-          <Text>4.5</Text>
+
+          <View className="flex-row items-center">
+            <Text>4.5</Text>
+            <Image
+              resizeMode="contain"
+              className="h-[15px] w-[12px] ml-1 "
+              tintColor={"#FCBB44"}
+              source={icons.star}
+            />
+          </View>
         </View>
         <Text
           ellipsizeMode="tail"
           numberOfLines={1}
           className="text-[17px] font-InSemiBold mt-1"
         >
-          {data.title}
+          {data?.title}
         </Text>
 
         <Text>
           <Text className="text-[18px] text-primary font-InSemiBold ">
-            ${data.amount}
+            ${data?.amount}
           </Text>{" "}
           /Month
         </Text>
@@ -102,7 +124,7 @@ const LCard = (item) => {
               source={icons.bed}
             />
             <Text className="font-InSemiBold mt-1 text-[#D3D7D8] text-[14px]">
-              {data.beds} Beds
+              {data?.beds} Beds
             </Text>
           </View>
           <View className="flex-row justify-center mr-7  items-center">
@@ -113,7 +135,7 @@ const LCard = (item) => {
               source={icons.bath}
             />
             <Text className="font-InSemiBold text-[#D3D7D8] mt-1 text-[14px]">
-              {data.bath} Bath
+              {data?.bath} Bath
             </Text>
           </View>
           <View className="flex-row justify-center  items-center">
@@ -124,7 +146,7 @@ const LCard = (item) => {
               source={icons.size}
             />
             <Text className="font-InSemiBold text-[#D3D7D8] mt-1 text-[14px]">
-              {data.sqrt} sqrt
+              {data?.sqrt} sqrt
             </Text>
           </View>
         </View>

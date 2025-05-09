@@ -192,7 +192,7 @@ const ProfileUpdate = () => {
                 placeholder="John Doe"
                 fieldstyle="w-full mb-5"
                 handleChangeText={(e) => {
-                  setForm({ ...userInfo, username: e });
+                  setUserInfo({ ...userInfo, username: e });
                 }}
               />
               <Formfield
@@ -201,9 +201,9 @@ const ProfileUpdate = () => {
                 placeholder="+234 5679 9000"
                 fieldstyle="w-full mb-5"
                 handleChangeText={(e) => {
-                  setForm({ ...userInfo, phoneNumber: e });
+                  setUserInfo({ ...userInfo, phoneNumber: e });
                 }}
-                keyboardType=""
+                keyboardType="Number-pad"
               />
               <Formfield
                 tittle="Email"
@@ -211,7 +211,7 @@ const ProfileUpdate = () => {
                 placeholder="example@gmail.com"
                 fieldstyle="w-full mb-5"
                 handleChangeText={(e) => {
-                  setForm({ ...userInfo, email: e });
+                  setUserInfo({ ...userInfo, email: e });
                 }}
                 keyboardType="email-address"
               />
