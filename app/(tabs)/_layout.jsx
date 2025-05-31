@@ -131,7 +131,8 @@ const TabsLayout = () => {
               </View>
             ),
             headerStyle: {
-              backgroundColor: "#d7e7d4",
+              // backgroundColor: "#d7e7d4",
+              backgroundColor: "#ffff",
             },
             headerLeftContainerStyle: {
               paddingLeft: 15,

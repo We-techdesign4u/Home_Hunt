@@ -31,8 +31,13 @@ import useAppwrite from "../../lib/useAppWrite";
 import { useGlobalContext } from "../../context/GlobalContextProvider";
 
 import { useLocalSearchParams } from "expo-router";
-
 import { add } from "date-fns";
+import Animated, {
+  ZoomIn,
+  BounceInRight,
+  withTiming,
+} from "react-native-reanimated";
+import InVcard from "../../components/InVcard";
 
 const Home = () => {
   const { data: posts, refetch } = useAppwrite(getAllPosts);
@@ -60,7 +65,8 @@ const Home = () => {
 
   return (
     <View className="h-full ">
-      <FlatList
+      <Animated.FlatList
+        // itemLayoutAnimation={ZoomIn.springify().stiffness(200).damping(80)}
         data={posts}
         keyExtractor={(item) => item.$id}
         showsVerticalScrollIndicator={false}
@@ -112,7 +118,25 @@ const Home = () => {
               </Text>
               <Text className="text-primary font-InSemiBold">See All</Text>
             </View>
-            <Vcard data={latestPost} />
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            >
+              {latestPost.map((item, index) => {
+                return (
+                  <Animated.View
+                    key={index}
+                    entering={BounceInRight.springify()
+                      .duration(1200)
+                      .stiffness(200)
+                      .damping(80)}
+                  >
+                    <InVcard item={item} />
+                  </Animated.View>
+                );
+              })}
+            </ScrollView>
+            {/* <Vcard data={latestPost} /> */}
             <View className="h-[40px] px-4 mt-5 items-center justify-between flex-row">
               <Text className="text-sm text-tsecondary font-InRegular mb-0">
                 Nearby Property

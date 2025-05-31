@@ -17,7 +17,11 @@ import CustomButton from "../../components/CustomButton";
 import { router, useLocalSearchParams } from "expo-router";
 import { useGlobalContext } from "../../context/GlobalContextProvider";
 import { format, isToday, isThisWeek, parseISO } from "date-fns";
+import useAppwrite from "../../lib/useAppWrite";
+import UserPropertyCard from "../../components/UserPropertyCard";
+import { getPropertyByID, fetchFav } from "../../lib/appwrite";
 import Hcard from "../../components/Hcard";
+import EmptyState from "../../components/EmptyState";
 
 const TabBarHeight = 48;
 const HeaderHeight = 230;
@@ -71,10 +75,12 @@ const TabScene = ({
 //collapsible tab view
 
 const MyProfile = () => {
+  const { data: properties, refetch } = useAppwrite(() =>
+    getPropertyByID(currentUser.$id)
+  );
   const params = useLocalSearchParams();
 
   const user = JSON.parse(params.creator);
-  // console.log("user", user);
 
   // const {
   //   creator,
@@ -83,6 +89,7 @@ const MyProfile = () => {
 
   const { currentUser, isLoggedIn } = useGlobalContext();
 
+  // console.log("Cuser", currentUser);
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: "About" },
@@ -267,7 +274,7 @@ const MyProfile = () => {
           </View>
           {user?.$id == currentUser?.$id ? (
             <TouchableOpacity
-              className="flex-row justify-center items-center mt-4 py-2 bg-slate-500 "
+              className="flex-row justify-center items-center mt-4 py-2  "
               onPress={() => router.push("/profileUpdate")}
             >
               <Image
@@ -293,10 +300,10 @@ const MyProfile = () => {
     return (
       <FlatList
         keyExtractor={(item) => item.$id}
-        data={user.property}
+        data={properties}
         ListHeaderComponent={({ item }) => (
           <View className="px-2 pt-3 flex-row justify-between">
-            <Text>header</Text>
+            <Text>Listed Properties</Text>
           </View>
         )}
         renderItem={({ item }) => <Hcard data={item} />}

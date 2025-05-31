@@ -7,6 +7,9 @@ import { useLocalSearchParams } from "expo-router";
 import { useGlobalContext } from "../context/GlobalContextProvider";
 import { useEffect } from "react";
 import { updateFav } from "../lib/appwrite";
+import { BlurView } from "expo-blur";
+import { SlideInRight, SlideOutLeft } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 const InVcard = (item) => {
   const { currentUser, removeFav, addFav } = useGlobalContext();
@@ -33,7 +36,7 @@ const InVcard = (item) => {
       />
 
       {currentUser ? (
-        <View>
+        <View className=" absolute top-0 right-0">
           {checkIfFav ? (
             <TouchableOpacity
               onPress={() => removeFav(data)}
@@ -68,47 +71,49 @@ const InVcard = (item) => {
         <View></View>
       )}
 
-      <View className="flex-row justify-between my-1">
-        <Text className="text-primary">Property {data.adType}</Text>
-        <View className="flex-row items-center">
-          <Text>4.5</Text>
-          <Image
-            resizeMode="contain"
-            className="h-[15px] w-[12px] ml-1 "
-            tintColor={"#FCBB44"}
-            source={icons.star}
-          />
+      <View className="">
+        <View className="flex-row justify-between my-1">
+          <Text className="text-black">Property {data.adType}</Text>
+          <View className="flex-row items-center">
+            <Text>4.5</Text>
+            <Image
+              resizeMode="contain"
+              className="h-[15px] w-[12px] ml-1 "
+              tintColor={"#FCBB44"}
+              source={icons.star}
+            />
+          </View>
         </View>
-      </View>
-      <Text
-        ellipsizeMode="tail"
-        numberOfLines={1}
-        className="text-[16px] font-InSemiBold mt-1"
-      >
-        {data.title}
-      </Text>
-
-      <View className="flex-row w-full items-center mb-1">
-        <Image
-          resizeMode="contain"
-          className="h-[15px] w-[15px] -ml-1 mr-1 "
-          tintColor={"#8B8B8B"}
-          source={icons.explore}
-        />
         <Text
           ellipsizeMode="tail"
           numberOfLines={1}
-          className="font-InSemiBold font-[12px] text-tsecondary"
+          className="text-[16px] font-InSemiBold mt-1"
         >
-          {data.street}
+          {data.title}
+        </Text>
+
+        <View className="flex-row w-full items-center mb-1">
+          <Image
+            resizeMode="contain"
+            className="h-[15px] w-[15px] -ml-1 mr-1 "
+            tintColor={"#8B8B8B"}
+            source={icons.explore}
+          />
+          <Text
+            ellipsizeMode="tail"
+            numberOfLines={1}
+            className="font-InSemiBold font-[12px] text-tsecondary"
+          >
+            {data.street}
+          </Text>
+        </View>
+        <Text>
+          <Text className="text-[18px] text-primary font-InSemiBold ">
+            ${data.amount}
+          </Text>{" "}
+          /month
         </Text>
       </View>
-      <Text>
-        <Text className="text-[18px] text-primary font-InSemiBold ">
-          ${data.amount}
-        </Text>{" "}
-        /month
-      </Text>
     </TouchableOpacity>
   );
 };

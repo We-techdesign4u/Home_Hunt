@@ -30,18 +30,18 @@ const LCard = (item) => {
         resizeMode="cover"
       />
       <View className=" flex-1 justify-center items-center absolute  left-8 top-6">
-        <View className="h-[30px] w-[90px] justify-center items-center rounded-full bg-white opacity-80"></View>
-        <Text className="absolute text-black font-InSemiBold text-[15px]">
+        <View className="h-[30px] w-[70px] justify-center items-center rounded-xl bg-black opacity-40"></View>
+        <Text className="absolute text-white font-InSemiBold text-[15px]">
           {data?.adType}
         </Text>
       </View>
 
       {currentUser ? (
-        <View>
+        <View className=" absolute top-6 right-0">
           {checkIfFav ? (
             <TouchableOpacity
               onPress={() => removeFav(data)}
-              className="h-[30px] w-[30px] justify-center items-center absolute  right-8 top-6"
+              className="h-[30px] w-[30px] justify-center items-center absolute right-8 top-6"
             >
               <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
 
@@ -55,7 +55,7 @@ const LCard = (item) => {
           ) : (
             <TouchableOpacity
               onPress={() => addFav(data)}
-              className="h-[30px] w-[30px] justify-center items-center absolute  right-8 top-6"
+              className="h-[30px] w-[30px] justify-center items-center absolute right-8 top-0"
             >
               <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
 

@@ -20,47 +20,50 @@ const Hcard = ({ data }) => {
       }
       className="h-[134px] w-full bg-white  bg-gray-10 items-center relative flex-row py-3 px-2 my-2 rounded-xl border-[0px] border-tsecondary"
     >
-      <Image
-        source={{ uri: data.coverpicture[0] }}
-        className="w-[117] rounded-lg bg-slate-600 mr-3 h-[115px]"
-        resizeMode="cover"
-      />
+      <View className="relative">
+        <Image
+          source={{ uri: data.coverpicture[0] }}
+          className="w-[117] rounded-lg bg-slate-600 mr-3 h-[115px]"
+          resizeMode="cover"
+        />
+        <View className="absolute">
+          {currentUser ? (
+            <View>
+              {checkIfFav ? (
+                <TouchableOpacity
+                  onPress={() => removeFav(data)}
+                  className="h-[30px] w-[30px] justify-center items-center absolute  left-5 top-4"
+                >
+                  <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
 
-      {currentUser ? (
-        <View>
-          {checkIfFav ? (
-            <TouchableOpacity
-              onPress={() => removeFav(data)}
-              className="h-[30px] w-[30px] justify-center items-center absolute  left-5 top-4"
-            >
-              <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
+                  <Image
+                    tintColor={"#ffffff"}
+                    className="h-4 absolute opacity-100 w-5"
+                    resizeMode="contain"
+                    source={icons.fav}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => addFav(data)}
+                  className="h-[30px] w-[30px] justify-center items-center absolute  left-5 top-4"
+                >
+                  <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
 
-              <Image
-                tintColor={"#ffffff"}
-                className="h-4 absolute opacity-100 w-5"
-                resizeMode="contain"
-                source={icons.fav}
-              />
-            </TouchableOpacity>
+                  <Image
+                    tintColor={"#ffffff"}
+                    className="h-4 absolute opacity-100 w-5"
+                    resizeMode="contain"
+                    source={icons.unfav}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
           ) : (
-            <TouchableOpacity
-              onPress={() => addFav(data)}
-              className="h-[30px] w-[30px] justify-center items-center absolute  left-5 top-4"
-            >
-              <View className="h-[30px] w-[30px] justify-center items-center rounded-full bg-black opacity-40"></View>
-
-              <Image
-                tintColor={"#ffffff"}
-                className="h-4 absolute opacity-100 w-5"
-                resizeMode="contain"
-                source={icons.unfav}
-              />
-            </TouchableOpacity>
+            <View></View>
           )}
         </View>
-      ) : (
-        <View></View>
-      )}
+      </View>
 
       <View className="flex-1">
         <View className="flex-row justify-between mb-2">

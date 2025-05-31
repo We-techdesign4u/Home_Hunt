@@ -16,6 +16,7 @@ import Review from "../../components/review";
 import CustomButton from "../../components/CustomButton";
 import { router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
+import PropertyPicAni from "../../components/PropertyPicAni";
 
 const TabBarHeight = 48;
 const HeaderHeight = 370;
@@ -91,9 +92,10 @@ const CollapsibleTabView = () => {
     sqrt,
     creator,
     reviews,
+    $id,
   } = allData;
 
-  // console.log("creator", creator);
+  // console.log("params", $id);
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: "About" },
@@ -176,56 +178,12 @@ const CollapsibleTabView = () => {
         className="absolute top-0 w-full bg-white"
         style={{ height: HeaderHeight, transform: [{ translateY: y }] }}
       >
-        <View className="h-[300px] w-full items-center">
-          <Image
-            className="h-[300px] absolute w-full"
-            resizeMode="cover"
-            source={{ uri: coverpicture[0] }}
-          />
-          <View className="flex-row justify-between w-full p-4">
-            <View></View>
-            <View className="flex-row">
-              <TouchableOpacity className="h-10 w-10 mr-2 rounded-full justify-center items-center bg-white">
-                <Image
-                  className="w-5 h-5"
-                  resizeMode="contain"
-                  tintColor={"#222"}
-                  source={icons.share}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity className="h-10 w-10 rounded-full justify-center items-center bg-white">
-                <Image
-                  className="w-6 h-6"
-                  resizeMode="contain"
-                  tintColor={"#222"}
-                  source={icons.bookmark}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View className="w-fit gap-x-1 max-w-11/12 pr-1 flex-row items-center  h-[60px] bg-white bottom-8 absolute rounded-lg">
-            <Image
-              className="h-[50px]   w-[50px] rounded-md"
-              resizeMode="cover"
-              source={{ uri: pictures[0] }}
-            />
-            <Image
-              className="h-[50px]   w-[50px] rounded-md"
-              resizeMode="cover"
-              source={images.house2}
-            />
-            <Image
-              className="h-[50px]   w-[50px] rounded-md"
-              resizeMode="cover"
-              source={images.house2}
-            />
-            <Image
-              className="h-[50px]   w-[50px] rounded-md"
-              resizeMode="cover"
-              source={images.house2}
-            />
-          </View>
-        </View>
+        <PropertyPicAni
+          coverpicture={coverpicture}
+          pictures={pictures}
+          favorites={creator.favorites}
+          id={$id}
+        />
         <View className="mx-4 mt-6 bg-white">
           <Text
             ellipsizeMode="tail"
