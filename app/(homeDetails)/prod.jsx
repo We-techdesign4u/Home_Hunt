@@ -95,7 +95,7 @@ const CollapsibleTabView = () => {
     $id,
   } = allData;
 
-  // console.log("params", $id);
+  
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     { key: "tab1", title: "About" },
@@ -172,7 +172,7 @@ const CollapsibleTabView = () => {
       extrapolateRight: "clamp",
     });
 
-    // console.log(cretorIDtest);
+ 
     return (
       <Animated.View
         className="absolute top-0 w-full bg-white"

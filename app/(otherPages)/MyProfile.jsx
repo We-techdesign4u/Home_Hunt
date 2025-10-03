@@ -75,6 +75,7 @@ const TabScene = ({
 //collapsible tab view
 
 const MyProfile = () => {
+  
   const { data: properties, refetch } = useAppwrite(() =>
     getPropertyByID(currentUser.$id)
   );

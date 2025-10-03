@@ -118,24 +118,36 @@ const Home = () => {
               </Text>
               <Text className="text-primary font-InSemiBold">See All</Text>
             </View>
-            <ScrollView
+
+            {/* <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
             >
-              {latestPost.map((item, index) => {
+              {latestPost.map((item) => {
                 return (
-                  <Animated.View
-                    key={index}
-                    entering={BounceInRight.springify()
-                      .duration(1200)
-                      .stiffness(200)
-                      .damping(80)}
+                  <View
+                    key={item.$id}
+                    // entering={BounceInRight.springify()
+                    //   .duration(1200)
+                    //   .stiffness(200)
+                    //   .damping(80)}
                   >
                     <InVcard item={item} />
-                  </Animated.View>
+                  </View>
+                  // <View key={index}>
+                  //   <InVcard item={item} />
+                  // </View>
                 );
               })}
-            </ScrollView>
+            </ScrollView> */}
+            <FlatList
+              data={latestPost}
+              keyExtractor={(item) => item.$id}
+              renderItem={({ item }) => <InVcard item={item} />}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+
             {/* <Vcard data={latestPost} /> */}
             <View className="h-[40px] px-4 mt-5 items-center justify-between flex-row">
               <Text className="text-sm text-tsecondary font-InRegular mb-0">
